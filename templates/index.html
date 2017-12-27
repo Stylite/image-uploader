@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Shitty image uploader</title>
-</head>
-<body>
-<form action="/upload" method="post" enctype="multipart/form-data" >
-    <label class="btn btn-default btn-file">
-        Browse <input type="file" name="image" style="display: none;">
-    </label>
-    <input type="submit" value="Upload your image" class="btn btn-primary">
-</form>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <title>Pythonk Image Uploader</title>
+    </head>
+    <body>
+        <div class="navbar">
+            <label class="navtext">Pythonk Image Uploader</label>
+        </div>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input class="fileselector" type="file" name="image">
+            <button class="fileupload" type="submit">Upload</button>
+        </form>
+    </body>
 </html>
