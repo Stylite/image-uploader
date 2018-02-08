@@ -25,7 +25,7 @@ def require_appkey(view_function):
         if request.headers.get('authorization') and request.headers.get('authorization') in get_auth_keys():
             return view_function(*args, **kwargs)
         else:
-            abort(json.dumps({'status': 401, 'error': 'Invalid authorization key. Message William#0660 or Kromatic#0420 for a key'}))
+            abort(json.dumps({'status': 401, 'error': 'Invalid authorization key. Message William#2222 or Kromatic#0420 for a key'}))
 )
 
     return decorated_function
