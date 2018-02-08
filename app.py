@@ -3,8 +3,12 @@ import os
 import random
 import re
 import sys
+import gevent.monkey
 
-from flask import Flask, redirect, render_template, request
+from flask import Flask, redirect, render_template, request, abort
+
+# gevent for async
+gevent.monkey.patch_all()
 
 # Configurable Options
 debug = any(arg in sys.argv for arg in ['dev', 'development', 'debug'])
@@ -15,11 +19,24 @@ app = Flask(__name__)
 extension_regex = re.compile(r"\.[a-z0-9]+$", re.IGNORECASE)
 
 
+def require_appkey(view_function):
+    @wraps(view_function)
+    def decorated_function(*args, **kwargs):
+        if request.headers.get('authorization') and request.headers.get('authorization') in get_auth_keys():
+            return view_function(*args, **kwargs)
+        else:
+            abort(json.dumps({'status': 401, 'error': 'Invalid authorization key. Message William#0660 or Kromatic#0387 for a key'}))
+)
+
+    return decorated_function
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
+@require_appkey
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'GET':
@@ -29,16 +46,6 @@ def upload_file():
 
     if not attachment:
         return json.dumps({'status': 400, 'error': 'Missing attachment "file"'})
-
-    auth = request.headers.get('authorization', None)
-
-    if not auth:
-        return json.dumps({'status': 401, 'error': 'Missing authorization key'})
-
-    if auth not in get_auth_keys():
-        return json.dumps({'status': 401, 'error': 'Invalid authorization key. Message William#0660 or Kromatic#0387 for a key'})
-
-    # TODO: Move auth stuff before file-requesting (Find workaround for 'connection reset' when validating key)
 
     extension = extension_regex.search(attachment.filename)
 
