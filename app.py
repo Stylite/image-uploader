@@ -20,13 +20,11 @@ extension_regex = re.compile(r"\.[a-z0-9]+$", re.IGNORECASE)
 
 
 def require_appkey(view_function):
-    @wraps(view_function)
     def decorated_function(*args, **kwargs):
         if request.headers.get('authorization') and request.headers.get('authorization') in get_auth_keys():
             return view_function(*args, **kwargs)
         else:
-            abort(json.dumps({'status': 401, 'error': 'Invalid authorization key. Message William#2222 or Kromatic#0420 for a key'}))
-)
+            abort(json.dumps({'status': 401, 'error': 'Invalid authorization key. Message Wil#0420 or Kromatic#0420 for a key'}))
 
     return decorated_function
 
@@ -36,8 +34,8 @@ def index():
     return render_template('index.html')
 
 
-@require_appkey
 @app.route('/upload', methods=['GET', 'POST'])
+@require_appkey
 def upload_file():
     if request.method == 'GET':
         return redirect('/')
