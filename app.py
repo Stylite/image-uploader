@@ -5,7 +5,7 @@ import re
 import sys
 import gevent.monkey
 
-from flask import Flask, redirect, render_template, request, abort
+from flask import Flask, redirect, render_template, request, abort, jsonify
 
 # gevent for async
 gevent.monkey.patch_all()
@@ -24,7 +24,7 @@ def require_appkey(view_function):
         if request.headers.get('authorization') and request.headers.get('authorization') in get_auth_keys():
             return view_function(*args, **kwargs)
         else:
-            abort(json.dumps({'status': 401, 'error': 'Invalid authorization key. Message Wil#0420 or Kromatic#0420 for a key'}))
+            abort(jsonify({'status': 401, 'error': 'Invalid authorization key. Message Wil#0420 or Kromatic#0420 for a key'}))
 
     return decorated_function
 
@@ -43,7 +43,7 @@ def upload_file():
     attachment = request.files.get('file', None)
 
     if not attachment:
-        return json.dumps({'status': 400, 'error': 'Missing attachment "file"'})
+        return jsonify({'status': 400, 'error': 'Missing attachment "file"'})
 
     extension = extension_regex.search(attachment.filename)
 
@@ -52,7 +52,7 @@ def upload_file():
     file_path = os.path.join(storage, file_name)
     attachment.save(file_path)
 
-    return json.dumps({'status': 200, 'file': file_name})
+    return jsonify({'status': 200, 'file': file_name})
 
 
 def generate_hex(length=10):  # Defaults to 10
